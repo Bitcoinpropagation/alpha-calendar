@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>币安 Alpha 空投日历 - 实时监控币安Alpha项目空投</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border: #30363d;
+            --success: #238636;
+            --warning: #f0883e;
+            --danger: #da3633;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav {
+            display: flex;
+            gap: 8px;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--text-primary);
+            background-color: var(--bg-card);
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .section-header i {
+            color: var(--accent);
+        }
+        
+        .stats-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 12px;
+            padding: 4px 12px;
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .stats-badge:hover {
+            background-color: var(--border);
+        }
+        
+        .stats-badge .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Tables */
+        .table-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            font-size: 0.95rem;
+        }
+        
+        tr:hover {
+            background-color: rgba(88, 166, 255, 0.05);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .project-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .project-token {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .project-name {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .external-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        
+        .external-link:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+        
+        .points {
+            font-weight: 600;
+        }
+        
+        .amount {
+            color: var(--text-secondary);
+        }
+        
+        .time {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        .price {
+            color: var(--success);
+            font-weight: 500;
+        }
+        
+        .mc {
+            color: var(--text-secondary);
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background-color: var(--bg-card);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        
+        .tag.tge {
+            background-color: rgba(35, 134, 54, 0.2);
+            color: var(--success);
+        }
+        
+        .tag.pre-tge {
+            background-color: rgba(240, 136, 62, 0.2);
+            color: var(--warning);
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .loading i {
+            animation: spin 1s linear infinite;
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        /* Tools Section */
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+        
+        .tool-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tool-item:hover {
+            background-color: rgba(88, 166, 255, 0.05);
+        }
+        
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.25rem;
+        }
+        
+        .tool-info {
+            flex: 1;
+        }
+        
+        .tool-name {
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tool-name:hover {
+            color: var(--accent-hover);
+        }
+        
+        .tool-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 24px 20px;
+            margin-top: 48px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 12px 0;
+            }
+            
+            nav {
+                width: 100%;
+                justify-content: center;
+                margin-top: 12px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .section-header {
+                font-size: 1.1rem;
+            }
+            
+            .stats-badge {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+        
+        .checkin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .checkin-stat {
+            background-color: var(--bg-card);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .checkin-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .checkin-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="bi bi-calendar-event"></i>
+                <span>Alpha</span>空投日历
+            </a>
+            <nav>
+                <a href="/" class="active">今日</a>
+                <a href="/history.html">历史</a>
+                <a href="/stability/">稳定度</a>
+                <a href="/calendar/">记账</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- 今日空投 -->
+        <section class="section">
+            <div class="section-header">
+                <i class="bi bi-gift"></i>
+                今日空投
+                <span class="stats-badge" onclick="showStats()">
+                    Alpha活跃人数推算 <span class="highlight" id="activeUsers">--</span> 万
+                    <i class="bi bi-chevron-down"></i>
+                </span>
+            </div>
+            <div class="table-container">
+                <table id="todayTable">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>积分</th>
+                            <th>数量</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                                加载中...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 空投预告 -->
+        <section class="section">
+            <div class="section-header">
+                <i class="bi bi-clock-history"></i>
+                空投预告
+            </div>
+            <div class="table-container">
+                <table id="upcomingTable">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>积分</th>
+                            <th>数量</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                                加载中...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 推荐工具 -->
+        <section class="section">
+            <div class="section-header">
+                <i class="bi bi-tools"></i>
+                推荐工具
+            </div>
+            <div class="table-container">
+                <div id="toolsList">
+                    <div class="tool-item">
+                        <div class="tool-icon">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div class="tool-info">
+                            <a href="/stability/" class="tool-name">
+                                稳定度看板（3秒更新）
+                                <i class="bi bi-box-arrow-up-right" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <div class="tool-desc">识别当前时间相对稳定的项目，降低磨损风险</div>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">
+                            <i class="bi bi-controller"></i>
+                        </div>
+                        <div class="tool-info">
+                            <a href="/airdrop-sim.html" class="tool-name">
+                                模拟抢空投（图片验证）
+                                <i class="bi bi-box-arrow-up-right" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <div class="tool-desc">每天练一练，模拟真实抢空投场景，提升反应速度和成功率</div>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">
+                            <i class="bi bi-grid"></i>
+                        </div>
+                        <div class="tool-info">
+                            <a href="/manual/icons-reference.html" class="tool-name">
+                                网站使用帮助与提示
+                                <i class="bi bi-box-arrow-up-right" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <div class="tool-desc">关于网站功能图标与术语解释说明</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://alpha123.uk" target="_blank">
+                    <i class="bi bi-globe"></i>
+                    alpha123.uk
+                </a>
+                <a href="https://twitter.com/alpha123cc" target="_blank">
+                    <i class="bi bi-twitter-x"></i>
+                    𝕏
+                </a>
+                <a href="https://t.me/alpha123cn" target="_blank">
+                    <i class="bi bi-telegram"></i>
+                    Telegram通知
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Stats Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Alpha 活跃人数统计</div>
+                <button class="modal-close" onclick="closeStats()">&times;</button>
+            </div>
+            <div class="checkin-stats" id="checkinStats">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - 使用相对路径调用 Vercel API Routes
+        const API_BASE = '/api';
+        
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        
+        // Format amount
+        function formatAmount(amount) {
+            const num = parseFloat(amount);
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + '万';
+            }
+            return amount;
+        }
+        
+        // Fetch today's airdrops
+        async function fetchTodayData() {
+            try {
+                const response = await fetch(`${API_BASE}/data`);
+                const data = await response.json();
+                
+                // Update active users
+                if (data.alpha_checkins && data.alpha_checkins.length > 0) {
+                    const todayCount = data.alpha_checkins.find(c => c.key === 'today')?.count || 0;
+                    document.getElementById('activeUsers').textContent = (todayCount / 10000).toFixed(1);
+                }
+                
+                // Render today table
+                const tbody = document.querySelector('#todayTable tbody');
+                if (data.airdrops && data.airdrops.length > 0) {
+                    tbody.innerHTML = data.airdrops.map(airdrop => `
+                        <tr>
+                            <td>
+                                <div class="project-cell">
+                                    <a href="#" class="project-token" onclick="showTgeInfo('${airdrop.token}'); return false;">
+                                        ${airdrop.token}
+                                    </a>
+                                    <a href="#" class="external-link" onclick="window.open('https://www.binance.com/en/price/${airdrop.token.toLowerCase()}', '_blank'); return false;">
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                    <span class="project-name">${airdrop.name}</span>
+                                </div>
+                            </td>
+                            <td class="points">${airdrop.points}</td>
+                            <td class="amount">${formatAmount(airdrop.amount)}</td>
+                            <td class="time">${airdrop.time || '--:--'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="empty">
+                                <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+                                暂无数据
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                // Store checkin data for modal
+                window.checkinData = data.alpha_checkins;
+                
+            } catch (error) {
+                console.error('Error fetching today data:', error);
+                document.querySelector('#todayTable tbody').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty">
+                            <i class="bi bi-exclamation-triangle" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+                            加载失败，请刷新重试
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Fetch upcoming airdrops
+        async function fetchUpcomingData() {
+            try {
+                // Try to fetch upcoming data from API
+                let upcomingData = [];
+                try {
+                    const response = await fetch(`${API_BASE}/upcoming`);
+                    if (response.ok) {
+                        upcomingData = await response.json();
+                    }
+                } catch (e) {
+                    // No upcoming data available
+                }
+                
+                const tbody = document.querySelector('#upcomingTable tbody');
+                if (upcomingData && upcomingData.length > 0) {
+                    tbody.innerHTML = upcomingData.map(airdrop => `
+                        <tr>
+                            <td>
+                                <div class="project-cell">
+                                    <span class="project-token">${airdrop.token}</span>
+                                    <span class="project-name">${airdrop.name}</span>
+                                </div>
+                            </td>
+                            <td class="points">${airdrop.points || '-'}</td>
+                            <td class="amount">${formatAmount(airdrop.amount) || '-'}</td>
+                            <td class="time">${airdrop.date || '待定'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="empty">
+                                <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+                                暂无预告数据
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching upcoming data:', error);
+                document.querySelector('#upcomingTable tbody').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty">
+                            <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+                            暂无预告数据
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Show stats modal
+        function showStats() {
+            const modal = document.getElementById('statsModal');
+            const statsContainer = document.getElementById('checkinStats');
+            
+            if (window.checkinData) {
+                const labels = {
+                    'today': '今日',
+                    'yesterday': '昨日',
+                    'before_yesterday': '前日'
+                };
+                
+                statsContainer.innerHTML = window.checkinData.map(stat => `
+                    <div class="checkin-stat">
+                        <div class="checkin-stat-value">${formatNumber(stat.count)}</div>
+                        <div class="checkin-stat-label">${labels[stat.key] || stat.key}</div>
+                    </div>
+                `).join('');
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // Close stats modal
+        function closeStats() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+        
+        // Show TGE info (placeholder)
+        function showTgeInfo(token) {
+            // This would show detailed TGE info in a modal
+            console.log('Show TGE info for:', token);
+        }
+        
+        // Close modal on outside click
+        document.getElementById('statsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeStats();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTodayData();
+            fetchUpcomingData();
+            
+            // Refresh data every 30 seconds
+            setInterval(fetchTodayData, 30000);
+        });
+    </script>
+</body>
+</html>
