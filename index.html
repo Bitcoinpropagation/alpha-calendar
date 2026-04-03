@@ -169,10 +169,7 @@
             background-color: rgba(88, 166, 255, 0.05);
         }
         
-        tr:last-child td {
-            border-bottom: none;
-        }
-        
+        /* Project Cell */
         .project-cell {
             display: flex;
             align-items: center;
@@ -182,6 +179,11 @@
         .project-token {
             font-weight: 600;
             color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .project-token:hover {
+            text-decoration: underline;
         }
         
         .project-name {
@@ -192,58 +194,29 @@
         .external-link {
             color: var(--text-secondary);
             text-decoration: none;
-            opacity: 0.6;
-            transition: opacity 0.2s;
+            font-size: 0.8rem;
         }
         
         .external-link:hover {
-            opacity: 1;
             color: var(--accent);
         }
         
+        /* Stats */
         .points {
             font-weight: 600;
+            color: var(--warning);
         }
         
         .amount {
-            color: var(--text-secondary);
+            font-weight: 500;
         }
         
         .time {
-            color: var(--warning);
-            font-weight: 500;
-        }
-        
-        .price {
-            color: var(--success);
-            font-weight: 500;
-        }
-        
-        .mc {
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
         
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            background-color: var(--bg-card);
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-left: 8px;
-        }
-        
-        .tag.tge {
-            background-color: rgba(35, 134, 54, 0.2);
-            color: var(--success);
-        }
-        
-        .tag.pre-tge {
-            background-color: rgba(240, 136, 62, 0.2);
-            color: var(--warning);
-        }
-        
-        /* Loading State */
+        /* Loading & Empty States */
         .loading {
             text-align: center;
             padding: 40px;
@@ -252,9 +225,7 @@
         
         .loading i {
             animation: spin 1s linear infinite;
-            font-size: 1.5rem;
-            display: block;
-            margin-bottom: 12px;
+            display: inline-block;
         }
         
         @keyframes spin {
@@ -262,64 +233,10 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Empty State */
         .empty {
             text-align: center;
             padding: 40px;
             color: var(--text-secondary);
-        }
-        
-        /* Tools Section */
-        .tool-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            transition: background-color 0.2s;
-        }
-        
-        .tool-item:last-child {
-            border-bottom: none;
-        }
-        
-        .tool-item:hover {
-            background-color: rgba(88, 166, 255, 0.05);
-        }
-        
-        .tool-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--bg-card);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 1.25rem;
-        }
-        
-        .tool-info {
-            flex: 1;
-        }
-        
-        .tool-name {
-            font-weight: 600;
-            color: var(--accent);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .tool-name:hover {
-            color: var(--accent-hover);
-        }
-        
-        .tool-desc {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 2px;
         }
         
         /* Footer */
@@ -327,17 +244,15 @@
             background-color: var(--bg-secondary);
             border-top: 1px solid var(--border);
             padding: 24px 20px;
-            margin-top: 48px;
+            margin-top: 40px;
         }
         
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
+            align-items: center;
         }
         
         .footer-links {
@@ -352,39 +267,58 @@
             align-items: center;
             gap: 6px;
             font-size: 0.9rem;
-            transition: color 0.2s;
         }
         
         .footer-links a:hover {
             color: var(--accent);
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-wrap: wrap;
-                height: auto;
-                padding: 12px 0;
-            }
-            
-            nav {
-                width: 100%;
-                justify-content: center;
-                margin-top: 12px;
-            }
-            
-            th, td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-            }
-            
-            .section-header {
-                font-size: 1.1rem;
-            }
-            
-            .stats-badge {
-                font-size: 0.75rem;
-            }
+        /* Tools Section */
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tool-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        .tool-info {
+            flex: 1;
+        }
+        
+        .tool-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tool-name:hover {
+            color: var(--accent);
+        }
+        
+        .tool-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
         }
         
         /* Modal */
@@ -624,8 +558,8 @@
     </div>
 
     <script>
-        // API Base URL - 使用相对路径调用 Vercel API Routes
-        const API_BASE = '/api';
+        // API Base URL - 直接请求 alpha123.uk
+        const API_BASE = 'https://alpha123.uk/api';
         
         // Format number with commas
         function formatNumber(num) {
@@ -798,9 +732,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchTodayData();
             fetchUpcomingData();
-            
-            // Refresh data every 30 seconds
-            setInterval(fetchTodayData, 30000);
         });
     </script>
 </body>
